@@ -7,6 +7,12 @@ using Microsoft.Identity.Web.UI;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(20);
+    options.Cookie.IsEssential = true;
+});
+
 var initialScopes = builder.Configuration["DownstreamApi:Scopes"]?.Split(' ') ?? builder.Configuration["MicrosoftGraph:Scopes"]?.Split(' ');
 
 // Add services to the container.
@@ -14,7 +20,7 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"))
         .EnableTokenAcquisitionToCallDownstreamApi(initialScopes)
             .AddMicrosoftGraph(builder.Configuration.GetSection("MicrosoftGraph"))
-            .AddInMemoryTokenCaches();
+            .AddSessionTokenCaches();
 
 builder.Services.AddControllersWithViews(options =>
 {
@@ -35,8 +41,33 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+else
+{
+    // In development, log exceptions
+    app.UseDeveloperExceptionPage();
+}
+
+// Add custom middleware to handle MicrosoftIdentityWebChallengeUserException
+app.Use(async (context, next) =>
+{
+    try
+    {
+        await next.Invoke();
+    }
+    catch (Microsoft.Identity.Web.MicrosoftIdentityWebChallengeUserException ex)
+    {
+        // This exception indicates the user needs to go through incremental consent
+        context.Response.Redirect($"/MicrosoftIdentity/Account/SignIn?redirectUri={context.Request.Path}");
+    }
+    catch (Microsoft.Identity.Client.MsalUiRequiredException ex)
+    {
+        // Handle silent token acquisition failures by triggering a new login challenge
+        context.Response.Redirect($"/MicrosoftIdentity/Account/SignIn?redirectUri={context.Request.Path}");
+    }
+});
 
 app.UseHttpsRedirection();
+app.UseSession();
 app.UseRouting();
 
 app.UseAuthentication();

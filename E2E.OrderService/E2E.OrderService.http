@@ -1,0 +1,6 @@
+@E2E.OrderService_HostAddress = http://localhost:5043
+
+GET {{E2E.OrderService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

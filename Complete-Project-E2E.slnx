@@ -1,3 +1,7 @@
 <Solution>
   <Project Path="Complete-Project-E2E/Complete-Project-E2E.csproj" />
+  <Project Path="E2E.AppHost/E2E.AppHost.csproj" Id="6c638d6d-b426-4254-aa6c-43ec86bc4c53" />
+  <Project Path="E2E.Library/E2E.Library.csproj" Id="eac619d7-573e-44b2-a987-8c27b50d61ef" />
+  <Project Path="E2E.OrderService/E2E.OrderService.csproj" Id="ccf3b0d2-4a49-4e1b-9acb-3465c3a3c8ef" />
+  <Project Path="E2E.ProductService/E2E.ProductService.csproj" Id="5a548786-bb31-4f3c-adb7-3626a3fece16" />
 </Solution>

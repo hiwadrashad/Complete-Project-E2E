@@ -20,8 +20,17 @@ namespace Complete_Project_E2E.Controllers
         [AuthorizeForScopes(ScopeKeySection = "MicrosoftGraph:Scopes")]
         public async Task<IActionResult> Index()
         {
-            var user = await _graphServiceClient.Me.GetAsync();
-            ViewData["GraphApiResult"] = user?.DisplayName ?? "Unknown user";
+            try
+            {
+                var user = await _graphServiceClient.Me.GetAsync();
+                ViewData["GraphApiResult"] = user?.DisplayName ?? "Unknown user";
+            }
+            catch (Microsoft.Identity.Web.MicrosoftIdentityWebChallengeUserException)
+            {
+                // The [AuthorizeForScopes] attribute should handle this, 
+                // but as a fallback, trigger a new authentication challenge
+                return Challenge();
+            }
             return View();
         }
 

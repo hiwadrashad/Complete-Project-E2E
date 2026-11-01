@@ -1,0 +1,18 @@
+<Project Sdk="Aspire.AppHost.Sdk/13.6.4">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AspireUseCliBundle>true</AspireUseCliBundle>
+    <UserSecretsId>6c51e094-5319-4d17-a3ef-b49468903ce5</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Complete-Project-E2E\Complete-Project-E2E.csproj" />
+    <ProjectReference Include="..\E2E.OrderService\E2E.OrderService.csproj" />
+    <ProjectReference Include="..\E2E.ProductService\E2E.ProductService.csproj" />
+  </ItemGroup>
+
+</Project>
