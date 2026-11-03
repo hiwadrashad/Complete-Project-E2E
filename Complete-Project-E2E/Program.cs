@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -54,12 +54,12 @@ app.Use(async (context, next) =>
     {
         await next.Invoke();
     }
-    catch (Microsoft.Identity.Web.MicrosoftIdentityWebChallengeUserException ex)
+    catch (Microsoft.Identity.Web.MicrosoftIdentityWebChallengeUserException)
     {
         // This exception indicates the user needs to go through incremental consent
         context.Response.Redirect($"/MicrosoftIdentity/Account/SignIn?redirectUri={context.Request.Path}");
     }
-    catch (Microsoft.Identity.Client.MsalUiRequiredException ex)
+    catch (Microsoft.Identity.Client.MsalUiRequiredException)
     {
         // Handle silent token acquisition failures by triggering a new login challenge
         context.Response.Redirect($"/MicrosoftIdentity/Account/SignIn?redirectUri={context.Request.Path}");
