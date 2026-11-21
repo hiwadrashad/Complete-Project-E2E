@@ -8,6 +8,7 @@ namespace E2E.Library.Models
         public string Name { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public decimal Price { get; set; }
+        public ProductType ProductType { get; set; }
         public MenClothingSizeEnum? MenSize { get; set; }
         public WomenClothingSizeEnum? WomenSize { get; set; }
         public MenTrouserSizeEnum? MenTrouserSize { get; set; }
