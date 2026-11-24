@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Complete_Project_E2E.Components;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -31,6 +32,8 @@ builder.Services.AddControllersWithViews(options =>
 });
 builder.Services.AddRazorPages()
     .AddMicrosoftIdentityUI();
+builder.Services.AddRazorComponents();
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
@@ -72,6 +75,7 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseAntiforgery();
 
 app.MapStaticAssets();
 
@@ -82,5 +86,6 @@ app.MapControllerRoute(
 
 app.MapRazorPages()
    .WithStaticAssets();
+app.MapRazorComponents<App>();
 
 app.Run();
