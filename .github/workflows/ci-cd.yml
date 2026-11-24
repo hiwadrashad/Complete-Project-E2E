@@ -1,29 +1,44 @@
-name: Build and test
+
+name: E2E Microservices CI
 
 on:
   push:
     branches:
       - master
-  workflow_dispatch:
+      - develop
+
+  pull_request:
+    branches:
+      - master
+      - develop
+
+permissions:
+  contents: read
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
+      # 1. Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      # 2. Install .NET 10
       - name: Setup .NET
         uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
 
+      # 3. Restore NuGet packages
       - name: Restore dependencies
         run: dotnet restore Complete-Project-E2E.slnx
 
+      # 4. Build entire solution
       - name: Build solution
         run: dotnet build Complete-Project-E2E.slnx --configuration Release --no-restore
 
+      # 5. Run automated tests
       - name: Run tests
         run: dotnet test Complete-Project-E2E.slnx --configuration Release --no-build
