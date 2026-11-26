@@ -1,0 +1,19 @@
+@page "/test"
+@rendermode InteractiveServer
+
+<h3>OnClick Test</h3>
+
+<button class="btn btn-primary" @onclick="ButtonClicked">
+    Click me
+</button>
+
+<p>@message</p>
+
+@code {
+    private string message = "Waiting for click...";
+
+    private void ButtonClicked()
+    {
+        message = "Button clicked successfully!";
+    }
+}

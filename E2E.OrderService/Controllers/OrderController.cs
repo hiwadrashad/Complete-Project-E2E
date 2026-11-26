@@ -14,5 +14,14 @@ namespace E2E.OrderService.Controllers
         {
             return await DbContext.Orders.ToListAsync();
         }
+
+        [HttpPost]
+        public async Task<OrderModel> CreateOrder(OrderModel order)
+        {
+            order.OrderDate = DateTime.UtcNow;
+            DbContext.Orders.Add(order);
+            await DbContext.SaveChangesAsync();
+            return order;
+        }
     }
 }

@@ -32,7 +32,8 @@ builder.Services.AddControllersWithViews(options =>
 });
 builder.Services.AddRazorPages()
     .AddMicrosoftIdentityUI();
-builder.Services.AddRazorComponents();
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 builder.Services.AddHttpClient();
 
 var app = builder.Build();
@@ -86,6 +87,7 @@ app.MapControllerRoute(
 
 app.MapRazorPages()
    .WithStaticAssets();
-app.MapRazorComponents<App>();
+app.MapRazorComponents<App>()
+    .AddInteractiveServerRenderMode();
 
 app.Run();

@@ -1,0 +1,29 @@
+@page "/productlist"
+@using E2E.Library.Models
+@inject HttpClient Http
+
+<div class="row">
+    @foreach (var product in products)
+    {
+        <div class="col-md-6">
+            <div class="card" style="width: 18rem;">
+                <img src="..." class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">Product Name: @product.Name</h5>
+                    <p class="card-text">Price: $@product.Price.ToString("F2")</p>
+                    <p class="card-text">Product Type: @product.ProductType</p>
+                    <a href="/cart/@product.Id" class="btn btn-primary">Buy</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@code {
+    private List<ProductModel> products = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await Http.GetFromJsonAsync<List<ProductModel>>("https://localhost:7113/api/product") ?? new();
+    }
+}

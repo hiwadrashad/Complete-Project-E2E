@@ -1,0 +1,80 @@
+﻿@page "/cart/{ProductId:guid}"
+@using E2E.Library.Models
+@inject HttpClient http
+@rendermode InteractiveServer
+
+<h3>OnClick Test</h3>
+
+<button class="btn btn-primary" @onclick="ButtonClicked">
+    Click me
+</button>
+
+<p>@message</p>
+
+<h3>Cart</h3>
+
+@if (!string.IsNullOrEmpty(orderMessage))
+{
+    <div class="alert @(orderSucceeded ? "alert-success" : "alert-danger")" role="alert">
+        @orderMessage
+    </div>
+}
+
+<form>
+    <div class="form-group mb-4">
+        <label>Customer Name</label>
+        <input type="text" class="form-control"  @bind="Order.UserId"/>
+    </div>
+    <div class="form-group mb-4">
+        <label>Product Name</label>
+        <input type="text" class="form-control" @bind="Product.Name" />
+    </div>
+    <div class="form-group mb-4">
+        <label>Quantity</label>
+        <input type="text" class="form-control" @bind="Order.TotalAmount" />
+    </div>
+    <button type="button" class="btn btn-primary" @onclick="Createorder">Place order</button>
+
+</form>
+@code {
+    private string message = "Waiting for click...";
+
+    private void ButtonClicked()
+    {
+        message = "Button clicked successfully!";
+    }
+
+    [Parameter]
+    public Guid ProductId { get; set; }
+    public OrderModel Order = new OrderModel();
+    public ProductModel Product = new ProductModel();
+    private string? orderMessage;
+    private bool orderSucceeded;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Order.Products = new List<ProductModel>() { Product};
+        Order.Products.FirstOrDefault().Id = ProductId;
+        Product = await http.GetFromJsonAsync<ProductModel>($"https://localhost:7113/api/product/{ProductId}");
+        await base.OnInitializedAsync();
+    }
+
+    public async Task Createorder()
+    {
+        orderMessage = "Submitting order...";
+        orderSucceeded = false;
+
+        try
+        {
+            var res = await http.PostAsJsonAsync("https://localhost:7017/api/order", Order);
+            orderSucceeded = res.IsSuccessStatusCode;
+            orderMessage = orderSucceeded
+                ? "Order placed successfully!"
+                : $"Order failed: {(int)res.StatusCode} {res.ReasonPhrase}";
+        }
+        catch (Exception ex)
+        {
+            orderMessage = $"Order request failed: {ex.Message}";
+        }
+    }
+}
